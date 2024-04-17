@@ -1,9 +1,11 @@
 genetic_algorithm_impl/
 box_cover/dmeo.py
 box_cover/test.py
-final_assignment/*
-!final_assignment/ACO.py
-!final_assignment/China_admin_center_coord.json
-!final_assignment/China_coord.json
-!final_assignment/city_coord.txt
-!final_assignment/utils.py
+final_assignment/*.m
+final_assignment/demo?.py
+final_assignment/image
+final_assignment/log
+final_assignment/qt1.py
+final_assignment/first.py
+
+
