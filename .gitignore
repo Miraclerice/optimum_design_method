@@ -1,3 +1,9 @@
 genetic_algorithm_impl/
 box_cover/dmeo.py
 box_cover/test.py
+final_assignment/*.m
+final_assignment/demo*.py
+final_assignment/first.py
+final_assignment/qt1.py
+final_assignment/image/*
+final_assignment/log/*
