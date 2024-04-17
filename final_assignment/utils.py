@@ -75,7 +75,7 @@ def get_coord_by_geo(location):
     """
     url = 'https://restapi.amap.com/v3/geocode/geo'
     params = {
-        'key': '60ecba892e443e306554b68ed194f662',
+        'key': 'your api key',
         'address': location
     }
     response = requests.get(url, params=params)
