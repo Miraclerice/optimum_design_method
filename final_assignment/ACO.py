@@ -93,7 +93,7 @@ class TSP(object):
         self.len_avg = np.zeros(self.epoch)
         self.coord_dis = self.get_coord_dis()
 
-    def train(self, mode=0):
+    def train(self, mode=1):
         """
         mode:
             1: 基本AS(蚁周期模型, ant-cycle-model)
@@ -128,7 +128,7 @@ class TSP(object):
             if mode == 6:
                 # 自适应蚂蚁系统, 这里t为一次迭代
                 rho_min = 0.1
-                if self.rho > rho_min:
+                if self.rho >= rho_min:
                     self.rho = 0.95 * self.rho
 
             self.update_dis(i, ants_dis)
@@ -166,7 +166,7 @@ class TSP(object):
                     for j in range(self.city_nums - 1):
                         pheromone[route[j], route[j + 1]] += Q / ants_dis[i]
                     pheromone[route[-1], route[0]] += Q / ants_dis[i]
-        elif mode == 5:
+        elif mode == 5 or mode == 6:
             # RBAS
             w = len(rank) + 1
             for rank, i in enumerate(rank):
@@ -231,7 +231,7 @@ class TSP(object):
         route_min = self.route_bs[len_min_idx].astype(np.int16)
         logger.write(f"\n{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))}\n")
         logger.write(f'当前模式：{mode} \n')
-        logger.write(f'最短路径的迭代次数: {len_min_idx} \n')
+        logger.write(f'总迭代次数: {self.epoch}\t最短路径的迭代次数: {len_min_idx} \n')
         logger.write(f'最短路径的长度: {len_min:.4f} \n')
         logger.write(f'最短路径的路径: {route_min} \n')
         logger.write(f'运行耗时: {consume_time:.2f}s\n')
@@ -257,11 +257,15 @@ class TSP(object):
         plt.xlabel('城市位置横坐标')
         plt.ylabel('城市位置纵坐标')
         plt.title(f'{mode}(最短距离:{len_min:.4f})')
-        assert os.path.exists('./image'), os.mkdir('./image')
+        # assert os.path.exists('./img_rand'), '文件夹不存在, 请先创建文件夹'
+        img_path = f'./image/img_{self.city_nums}_{self.epoch}'
+        if not os.path.exists(img_path):
+            os.makedirs(img_path)
+
         ax = plt.gca()
         ax.spines['right'].set_color('none')
         ax.spines['top'].set_color('none')
-        plt.savefig(f'./image/{mode}1.png', bbox_inches='tight')
+        plt.savefig(f'{img_path}/{mode}1.png', bbox_inches='tight')
 
         plt.figure(2)
         plt.plot(range(1, self.epoch + 1), self.len_bs, 'b', range(1, self.epoch + 1), self.len_avg, 'r')
@@ -272,23 +276,43 @@ class TSP(object):
         ax = plt.gca()
         ax.spines['right'].set_color('none')
         ax.spines['top'].set_color('none')
-        plt.savefig(f'./image/{mode}2.png', bbox_inches='tight')
+        plt.savefig(f'{img_path}/{mode}2.png', bbox_inches='tight')
         plt.show()
+
+    def clear(self):
+        """将重要参数重新初始化"""
+        self.tau = np.ones((self.city_nums, self.city_nums))
+        self.tabu = np.zeros((self.ants_nums, self.city_nums), dtype=np.int16)
+        self.route_bs = np.zeros((self.epoch, self.city_nums))
+        self.len_bs = np.zeros(self.epoch)
+        self.len_avg = np.zeros(self.epoch)
 
 
 if __name__ == '__main__':
     # coord = load_China_coord('./China_coord.json')
     coord = load_China_coord('./China_admin_center_coord.json')
+    # coord = load_random_coord(100)
     ants_nums = 50
     # tsp = TSP(coord, ants_nums, rho=0.5)
-    tsp = TSP(coord, ants_nums)
-    tsp.train(mode=1)
-    tsp.train(mode=2)
-    tsp.train(mode=3)
-    tsp.train(mode=4)
-    tsp.train(mode=5)
-    print('模式5已完成')
-    print(tsp.rho)
-    print('模式6：自适应蚂蚁系统')
-    tsp.rho = 0.5
+    tsp = TSP(coord, ants_nums, epoch=200)
+    # tsp.train(mode=1)
+    # tsp.clear()
+    #
+    # tsp.train(mode=2)
+    # tsp.clear()
+    #
+    # tsp.train(mode=3)
+    # tsp.clear()
+    #
+    # tsp.train(mode=4)
+    # tsp.clear()
+    #
+    # tsp.train(mode=5)
+    # tsp.clear()
+    # print('模式5已完成')
+    # print(tsp.rho)
+    #
+    # print('模式6：自适应蚂蚁系统')
+    tsp.rho = 1
     tsp.train(mode=6)
+    # tsp.clear()

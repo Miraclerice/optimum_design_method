@@ -46,7 +46,16 @@ def load_random_coord(city_nums):
     """随机生成城市坐标"""
     city_coord = []
     for i in range(city_nums):
-        city_coord.append([np.random.randint(0, 200), np.random.randint(0, 200)])
+        # 判断与i前的值不能同时相等
+        if i == 0:
+            city_coord.append([np.random.randint(0, 200), np.random.randint(0, 200)])
+        else:
+            for j in range(i):
+                longitude = np.random.uniform(0, 200)
+                latitude = np.random.uniform(0, 200)
+                if city_coord[j][0] != longitude and city_coord[j][1] != latitude:
+                    city_coord.append([longitude, latitude])
+                    break
     return np.asarray(city_coord, dtype=np.float32)
 
 
@@ -109,7 +118,10 @@ def save_admin_center_coord(city_lst):
 
 if __name__ == '__main__':
     # save_admin_center_coord(admin_center)
-    arr1 = load_China_coord('China_coord.json')
-    print(arr1.shape)
-    arr2 = load_China_coord('China_admin_center_coord.json')
-    print(arr2.shape)
+
+    # arr1 = load_China_coord('China_coord.json')
+    # print(arr1.shape)
+    # arr2 = load_China_coord('China_admin_center_coord.json')
+    # print(arr2.shape)
+
+    print(load_random_coord(100))
