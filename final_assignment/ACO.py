@@ -55,7 +55,7 @@ class Ant(object):
             for j, city in enumerate(tabu_un):
                 prob[j] = self.tau[tabu_vis[-1], city] ** self.alpha * self.eta[tabu_vis[-1], city] ** self.beta
 
-            # 根据概率随机选择下一个城市（轮盘赌法）
+            # 根据概率随机选择下一个城市（轮盘赌选择法）
             prob = prob / np.sum(prob)
             prob_sum = np.cumsum(prob)
             # np.where返回的是元祖
